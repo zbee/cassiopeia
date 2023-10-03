@@ -163,6 +163,7 @@ class Resource(Enum):
 
 
 class Side(Enum):
+    arena = 0
     blue = 100
     red = 200
 
