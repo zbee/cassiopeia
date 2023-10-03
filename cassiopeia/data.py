@@ -560,6 +560,7 @@ class Queue(Enum):
     deprecated_nexus_blitz = "NEXUS_BLITZ"  # 1200
     nexus_blitz = "NEXUS_BLITZ"  # 1300
     ultimate_spellbook = "ULTIMATE_SPELLBOOK"  # 1400
+    rings_of_wrath = "RINGS_OF_WRATH"  # 1700
     tutorial1 = "TUTORIAL_1"  # Summoner's Rift  Tutorial 1
     tutorial2 = "TUTORIAL_2"  # Summoner's Rift  Tutorial 2
     tutorial3 = "TUTORIAL_3"  # Summoner's Rift  Tutorial 3
