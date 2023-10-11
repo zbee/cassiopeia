@@ -151,7 +151,7 @@ if USE_PYCURL:
             ).upper()
 
             # Decode to text if a charset is included
-            match = re.search("CHARSET=(\S+)", content_type)
+            match = re.search(r"CHARSET=(\S+)", content_type)
             if match:
                 encoding = match.group(1)
                 body = body.decode(encoding)
