@@ -343,7 +343,9 @@ class Role(Enum):
         return {
             "DUO": Role.duo,
             "DUO_CARRY": Role.duo_carry,
+            "CARRY": Role.duo_carry,
             "DUO_SUPPORT": Role.duo_support,
+            "SUPPORT": Role.duo_support,
             "NONE": Role.none,
             "SOLO": Role.solo,
         }[string]
