@@ -252,7 +252,7 @@ else:  # Use requests
             ).upper()
 
             # Decode to text if a charset is included
-            match = re.search("CHARSET=(\S+)", content_type)
+            match = re.search(r"CHARSET=(\S+)", content_type)
             if match:
                 # Load JSON if necessary
                 if "APPLICATION/JSON" in content_type:
