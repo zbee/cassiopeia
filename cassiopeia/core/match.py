@@ -2046,8 +2046,11 @@ class Match(CassiopeiaGhost):
     @property
     def patch(self) -> Patch:
         if hasattr(self._data[MatchData], "version"):
-            version = ".".join(self.version.split(".")[:2])
-            patch = Patch.from_str(version, region=self.region)
+            if self.version.startswith('13.21.5'):
+                patch = Patch.from_date(date=self.creation, region=self.region)
+            else:
+                version = ".".join(self.version.split(".")[:2])
+                patch = Patch.from_str(version, region=self.region)
         else:
             date = self.creation
             patch = Patch.from_date(date, region=self.region)
