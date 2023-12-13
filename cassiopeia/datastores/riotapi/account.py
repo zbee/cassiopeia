@@ -48,7 +48,7 @@ class AccountAPI(RiotAPIService):
 
     @get.register(AccountDto)
     @validate_query(_validate_get_account_query, convert_to_continent)
-    def get_summoner(
+    def get_account(
             self, query: MutableMapping[str, Any], context: PipelineContext = None
     ) -> AccountDto:
         if "puuid" in query:

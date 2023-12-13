@@ -43,6 +43,7 @@ from ..dto.status import ShardStatusDto
 from ..dto.match import MatchDto, MatchReferenceDto, TimelineDto
 from ..dto.spectator import CurrentGameInfoDto, FeaturedGamesDto
 from ..dto.summoner import SummonerDto
+from ..dto.account import AccountDto
 
 from ..core.championmastery import ChampionMastery, ChampionMasteries
 from ..core.league import (
@@ -1463,6 +1464,64 @@ def for_many_summoner_dto_query(
         identifiers, identifier_type = query["accountIds"], int
     else:
         identifiers, identifier_type = query["names"], str
+    for identifier in identifiers:
+        try:
+            identifier = identifier_type(identifier)
+            yield query["platform"].value, identifier
+        except ValueError as e:
+            raise QueryValidationError from e
+
+
+################
+# Account API #
+################
+
+
+validate_account_dto_query = (
+    Query.has("puuid")
+    .as_(str)
+    .or_("gameName")
+    .as_(str)
+    .and_("tagLine")
+    .as_(str)
+    .also.has("region")
+    .as_(Region)
+)
+
+
+validate_many_account_dto_query = (
+    Query.has("puuid")
+    .as_(str)
+    .or_("gameName")
+    .as_(str)
+    .and_("tagLine")
+    .as_(str)
+    .also.has("region")
+    .as_(Region)
+)
+
+
+def for_account_dto(
+    account: AccountDto, identifier: str = "puuid"
+) -> Tuple[str, Union[int, str]]:
+    return account["platform"], account[identifier]
+
+
+def for_account_dto_query(query: Query) -> Tuple[str, Union[int, str]]:
+    if "gameName" in query and "tagLine" in query:
+        identifier = "gameName"
+    else:
+        identifier = "puuid"
+    return query["platform"].value, query[identifier]
+
+
+def for_many_account_dto_query(
+    query: Query,
+) -> Generator[Tuple[str, Union[int, str]], None, None]:
+    if "gameNames" in query and "tagLines" in query:
+        identifiers, identifier_type = query["gameNames"], str
+    else:
+        identifiers, identifier_type = query["puuid"], str
     for identifier in identifiers:
         try:
             identifier = identifier_type(identifier)
