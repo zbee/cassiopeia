@@ -1486,8 +1486,6 @@ validate_account_dto_query = (
     .as_(str)
     .and_("tagLine")
     .as_(str)
-    .also.has("region")
-    .as_(Region)
 )
 
 
@@ -1498,8 +1496,6 @@ validate_many_account_dto_query = (
     .as_(str)
     .and_("tagLines")
     .as_(str)
-    .also.has("region")
-    .as_(Region)
 )
 
 
@@ -3285,8 +3281,6 @@ validate_account_query = (
     .as_(str)
     .and_("tagLine")
     .as_(str)
-    .also.has("region")
-    .as_(Region)
 )
 
 
@@ -3297,20 +3291,18 @@ validate_many_account_query = (
     .as_(str)
     .and_("tagLines")
     .as_(str)
-    .also.has("region")
-    .as_(Region)
 )
 
 
 def for_account(account: Account) -> List[Tuple]:
     keys = []
     try:
-        keys.append((account.region.continent.value, "puuid", account._data[AccountData].puuid))
+        keys.append(("puuid", account._data[AccountData].puuid))
     except AttributeError:
         pass
     try:
         keys.append(
-            (account.region.continent.value, "gameName", account._data[AccountData].gameName,
+            ("gameName", account._data[AccountData].gameName,
              "tagLine", account._data[AccountData].tagLine)
         )
     except AttributeError:
@@ -3321,17 +3313,17 @@ def for_account(account: Account) -> List[Tuple]:
 def for_account_query(query: Query) -> List[Tuple]:
     keys = []
     if "gameName" in query:
-        keys.append((query["region"].continent.value, "gameName", query["gameName"],
+        keys.append(("gameName", query["gameName"],
                     "tagLine", query["tagLine"]))
     if "puuid" in query:
-        keys.append((query["region"].continent.value, "puuid", query["puuid"]))
+        keys.append(("puuid", query["puuid"]))
     return keys
 
 
 def for_many_account_query(query: Query) -> Generator[List[Tuple], None, None]:
     grouped_identifiers = []
     identifier_types = []
-    if "gameNames" in query:
+    if "gameNames" in query and "tagLines" in query:
         grouped_identifiers.append(query["gameNames"])
         identifier_types.append(str)
         grouped_identifiers.append(query["tagLines"])
@@ -3344,7 +3336,7 @@ def for_many_account_query(query: Query) -> Generator[List[Tuple], None, None]:
         for identifier, identifier_type in zip(identifiers, identifier_types):
             try:
                 identifier = identifier_type(identifier)
-                keys.append((query["region"].continent.value, identifier))
+                keys.append(identifier)
             except ValueError as e:
                 raise QueryValidationError from e
         yield keys

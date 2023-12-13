@@ -369,8 +369,6 @@ class UnloadedGhostStore(DataSource):
         .as_(str)
         .and_("tagLine")
         .as_(str)
-        .also.has("region")
-        .as_(Region)
     )
 
     _validate_get_verification_string_query = (
@@ -456,7 +454,7 @@ class UnloadedGhostStore(DataSource):
         return Summoner._construct_normally(**kwargs)
 
     @get.register(Account)
-    @validate_query(_validate_get_account_query, convert_to_continent)
+    @validate_query(_validate_get_account_query)
     def get_account(
         self, query: MutableMapping[str, Any], context: PipelineContext = None
     ) -> Account:

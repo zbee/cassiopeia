@@ -42,28 +42,20 @@ class AccountAPI(RiotAPIService):
         .as_(str)
         .and_("tagLine")
         .as_(str)
-        .also.has("region")
-        .as_(Region)
     )
 
     @get.register(AccountDto)
-    @validate_query(_validate_get_account_query, convert_to_continent)
+    @validate_query(_validate_get_account_query)
     def get_account(
             self, query: MutableMapping[str, Any], context: PipelineContext = None
     ) -> AccountDto:
         if "puuid" in query:
-            url = ("https://{platform}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{"
-                   "puuid}").format(
-                platform=query["continent"].value.lower(), puuid=query["puuid"]
-            )
+            url = ("https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/"
+                   f"{query['puuid']}")
             endpoint = "accounts/by-puuid/puuid"
         elif "gameName" in query and "tagLine" in query:
-            url = ("https://{platform}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{"
-                   "gameName}/{tagLine}").format(
-                platform=query["continent"].value.lower(),
-                gameName=query["gameName"],
-                tagLine=query["tagLine"]
-            )
+            url = ("https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/"
+                   f"{query['gameName']}/{query['tagLine']}")
             endpoint = "accounts/by-riot-id/gameName/tagLine"
         else:
             endpoint = ""

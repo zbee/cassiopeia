@@ -180,13 +180,8 @@ def get_account(
         puuid: str = None,
         gameName: str = None,
         tagLine: str = None,
-        region: Union[Region, str] = None,
-        continent: Union[Continent, str] = None,
 ) -> Account:
-    return Account(
-        puuid=puuid, gameName=gameName, tagLine=tagLine,
-        region=region, continent=continent,
-    )
+    return Account(puuid=puuid, gameName=gameName, tagLine=tagLine)
 
 
 def get_champion(key: Union[str, int], region: Union[Region, str] = None) -> Champion:

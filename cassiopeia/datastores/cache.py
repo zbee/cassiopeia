@@ -1537,18 +1537,14 @@ class Cache(DataSource, DataSink):
     ################
 
     @get.register(Account)
-    @validate_query(
-        uniquekeys.validate_account_dto_query, uniquekeys.convert_to_continent
-    )
+    @validate_query(uniquekeys.validate_account_dto_query)
     def get_account(
         self, query: Mapping[str, Any], context: PipelineContext = None
     ) -> Account:
         return self._get(Account, query, uniquekeys.for_account_query, context)
 
     @get_many.register(Account)
-    @validate_query(
-        uniquekeys.validate_many_account_query, uniquekeys.convert_to_continent
-    )
+    @validate_query(uniquekeys.validate_many_account_query)
     def get_many_account(
         self, query: Mapping[str, Any], context: PipelineContext = None
     ) -> Generator[Account, None, None]:
@@ -1567,9 +1563,7 @@ class Cache(DataSource, DataSink):
         self._put_many(Account, items, uniquekeys.for_account, context=context)
 
     @get.register(AccountData)
-    @validate_query(
-        uniquekeys.validate_account_query, uniquekeys.convert_to_continent
-    )
+    @validate_query(uniquekeys.validate_account_query)
     def get_account_data(
         self, query: Mapping[str, Any], context: PipelineContext = None
     ) -> AccountData:
