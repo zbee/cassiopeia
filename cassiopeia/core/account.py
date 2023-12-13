@@ -1,12 +1,14 @@
+import json
 from typing import Union
 
 from datapipelines import NotFoundError
 from merakicommons.cache import lazy_property
 from merakicommons.container import searchable
 
-from ..data import Region
+from ..data import Region, Continent, Platform
 from .common import CoreData, CassiopeiaGhost, ghost_load_on
 from ..dto.account import AccountDto
+
 
 ##############
 # Data Types #
@@ -17,6 +19,7 @@ class AccountData(CoreData):
     _dto_type = AccountDto
     _renamed = {}
 
+
 ##############
 # Core Types #
 ##############
@@ -24,8 +27,9 @@ class AccountData(CoreData):
 
 @searchable(
     {
-        str: ["puuid", "gameName", "tagLine", ],
+        str: ["puuid", "gameName", "tagLine",],
         Region: ["region"],
+        Continent: ["continent"],
     }
 )
 class Account(CassiopeiaGhost):
@@ -37,7 +41,9 @@ class Account(CassiopeiaGhost):
             puuid: str = None,
             gameName: str = None,
             tagLine: str = None,
-            region: Union[Region, str] = None
+            continent: Union[Continent, str] = None,
+            region: Union[Region, str] = None,
+            platform: Union[Platform, str] = None,
     ):
         kwargs = {"region": region}
 
@@ -47,6 +53,15 @@ class Account(CassiopeiaGhost):
             kwargs["gameName"] = gameName
         if tagLine is not None:
             kwargs["tagLine"] = tagLine
+
+        if continent is not None:
+            kwargs["continent"] = continent
+        else:
+            if isinstance(region, Region):
+                kwargs["continent"] = region.continent
+            else:
+                kwargs["continent"] = Region(region).continent
+
         super().__init__(**kwargs)
 
     @classmethod
@@ -56,7 +71,9 @@ class Account(CassiopeiaGhost):
             puuid: str = None,
             gameName: str = None,
             tagLine: str = None,
-            region: Union[Region, str]
+            continent: Union[Continent, str] = None,
+            region: Union[Region, str] = None,
+            platform: Union[Platform, str] = None,
     ) -> dict:
         query = {"region": region}
 
@@ -67,10 +84,18 @@ class Account(CassiopeiaGhost):
         if tagLine is not None:
             query["tagLine"] = tagLine
 
+        if continent is not None:
+            query["continent"] = continent
+        else:
+            if isinstance(region, Region):
+                query["continent"] = region.continent
+            else:
+                query["continent"] = Region(region).continent
+
         return query
 
     def __get_query__(self):
-        query = {"region": self.region, "platform": self.platform}
+        query = {"region": self.region}
 
         try:
             query["puuid"] = self._data[AccountData].puuid
@@ -84,9 +109,15 @@ class Account(CassiopeiaGhost):
             query["tagLine"] = self._data[AccountData].tagLine
         except AttributeError:
             pass
+        try:
+            query["continent"] = self._data[AccountData].continent
+        except AttributeError:
+            pass
+
         assert (
                 ("name" in query and "tagLine" in query) or "puuid" in query
         )
+
         return query
 
     def __eq__(self, other: "Account"):
@@ -115,6 +146,7 @@ class Account(CassiopeiaGhost):
         tagLine = "?"
         gameName = "?"
         puuid = "?"
+        continent = "?"
 
         if hasattr(self._data[AccountData], "tagLine"):
             tagLine = self.tagLine
@@ -122,9 +154,12 @@ class Account(CassiopeiaGhost):
             gameName = self.gameName
         if hasattr(self._data[AccountData], "puuid"):
             puuid = self.puuid
+        if hasattr(self._data[AccountData], "continent"):
+            continent = self.continent
 
-        return "Account(gameName='{gameName}', tagLine='{tagLine}' puuid='{puuid}')".format(
-            gameName=gameName, tagLine=tagLine, puuid=puuid
+        return ("Account(gameName='{gameName}', tagLine='{tagLine}' puuid='{puuid}', "
+                "continent='{continent}')").format(
+            gameName=gameName, tagLine=tagLine, puuid=puuid, continent=continent
         )
 
     @property
@@ -141,6 +176,11 @@ class Account(CassiopeiaGhost):
     def region(self) -> Region:
         """The region for this account."""
         return Region(self._data[AccountData].region)
+
+    @lazy_property
+    def continent(self) -> Continent:
+        """The continent for this account."""
+        return Region(self._data[AccountData].region).continent
 
     @CassiopeiaGhost.property(AccountData)
     @ghost_load_on

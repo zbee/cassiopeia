@@ -78,5 +78,4 @@ class AccountAPI(RiotAPIService):
         except APINotFoundError as error:
             raise NotFoundError(str(error)) from error
 
-        data["region"] = query["continent"].region.value
         return AccountDto(**data)

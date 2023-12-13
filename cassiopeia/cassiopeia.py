@@ -92,38 +92,38 @@ def get_league_entries(summoner: Summoner) -> LeagueEntries:
 
 
 def get_paginated_league_entries(
-    queue: Queue, tier: Tier, division: Division, region: Union[Region, str] = None
+        queue: Queue, tier: Tier, division: Division, region: Union[Region, str] = None
 ) -> LeagueEntries:
     return LeagueEntries(region=region, queue=queue, tier=tier, division=division)
 
 
 def get_master_league(
-    queue: Union[Queue, int, str], region: Union[Region, str] = None
+        queue: Union[Queue, int, str], region: Union[Region, str] = None
 ) -> MasterLeague:
     return MasterLeague(queue=queue, region=region)
 
 
 def get_grandmaster_league(
-    queue: Union[Queue, int, str], region: Union[Region, str] = None
+        queue: Union[Queue, int, str], region: Union[Region, str] = None
 ) -> GrandmasterLeague:
     return GrandmasterLeague(queue=queue, region=region)
 
 
 def get_challenger_league(
-    queue: Union[Queue, int, str], region: Union[Region, str] = None
+        queue: Union[Queue, int, str], region: Union[Region, str] = None
 ) -> ChallengerLeague:
     return ChallengerLeague(queue=queue, region=region)
 
 
 def get_match_history(
-    continent: Continent = None,
-    puuid: str = None,
-    start_time: arrow.Arrow = None,
-    end_time: arrow.Arrow = None,
-    queue: Queue = None,
-    type: MatchType = None,
-    start: int = None,
-    count: int = None,
+        continent: Continent = None,
+        puuid: str = None,
+        start_time: arrow.Arrow = None,
+        end_time: arrow.Arrow = None,
+        queue: Queue = None,
+        type: MatchType = None,
+        start: int = None,
+        count: int = None,
 ):
     return MatchHistory(
         continent=continent,
@@ -146,44 +146,47 @@ def get_featured_matches(region: Union[Region, str] = None) -> FeaturedMatches:
 
 
 def get_current_match(
-    summoner: Summoner, region: Union[Region, str] = None
+        summoner: Summoner, region: Union[Region, str] = None
 ) -> CurrentMatch:
     return CurrentMatch(summoner=summoner, region=region)
 
 
 def get_champion_masteries(
-    summoner: Summoner, region: Union[Region, str] = None
+        summoner: Summoner, region: Union[Region, str] = None
 ) -> ChampionMasteries:
     return ChampionMasteries(summoner=summoner, region=region)
 
 
 def get_champion_mastery(
-    summoner: Summoner,
-    champion: Union[Champion, int, str],
-    region: Union[Region, str] = None,
+        summoner: Summoner,
+        champion: Union[Champion, int, str],
+        region: Union[Region, str] = None,
 ) -> ChampionMastery:
     return ChampionMastery(champion=champion, summoner=summoner, region=region)
 
 
 def get_summoner(
-    *,
-    id: str = None,
-    account_id: str = None,
-    name: str = None,
-    region: Union[Region, str] = None
+        *,
+        id: str = None,
+        account_id: str = None,
+        name: str = None,
+        region: Union[Region, str] = None
 ) -> Summoner:
     return Summoner(id=id, account_id=account_id, name=name, region=region)
 
 
 def get_account(
-    *,
-    puuid: str = None,
-    gameName: str = None,
-    tagLine: str = None,
-    region: Union[Region, str] = None
+        *,
+        puuid: str = None,
+        gameName: str = None,
+        tagLine: str = None,
+        region: Union[Region, str] = None,
+        continent: Union[Continent, str] = None,
 ) -> Account:
-    return Account(puuid=puuid, gameName=gameName, tagLine=tagLine, region=region)
-
+    return Account(
+        puuid=puuid, gameName=gameName, tagLine=tagLine,
+        region=region, continent=continent,
+    )
 
 
 def get_champion(key: Union[str, int], region: Union[Region, str] = None) -> Champion:
@@ -235,7 +238,7 @@ def get_versions(region: Union[Region, str] = None) -> List[str]:
 
 
 def get_version(
-    date: datetime.date = None, region: Union[Region, str] = None
+        date: datetime.date = None, region: Union[Region, str] = None
 ) -> Union[None, str]:
     versions = get_versions(region)
     if date is None:

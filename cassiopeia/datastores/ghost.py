@@ -15,6 +15,7 @@ from ..core import (
     ProfileIcon,
     LanguageStrings,
     Summoner,
+    Account,
     ChampionMastery,
     Match,
     CurrentMatch,
@@ -361,6 +362,17 @@ class UnloadedGhostStore(DataSource):
         .as_(Platform)
     )
 
+    _validate_get_account_query = (
+        Query.has("puuid")
+        .as_(str)
+        .or_("gameName")
+        .as_(str)
+        .and_("tagLine")
+        .as_(str)
+        .also.has("region")
+        .as_(Region)
+    )
+
     _validate_get_verification_string_query = (
         Query.has("platform").as_(Platform).also.has("summoner.id").as_(str)
     )
@@ -442,6 +454,14 @@ class UnloadedGhostStore(DataSource):
         if "accountId" in kwargs:
             kwargs["account_id"] = kwargs.pop("accountId")
         return Summoner._construct_normally(**kwargs)
+
+    @get.register(Account)
+    @validate_query(_validate_get_account_query, convert_to_continent)
+    def get_account(
+        self, query: MutableMapping[str, Any], context: PipelineContext = None
+    ) -> Account:
+        kwargs = copy.deepcopy(query)
+        return Account._construct_normally(**kwargs)
 
     @get.register(ChampionMastery)
     @validate_query(_validate_get_champion_mastery_query, convert_region_to_platform)
