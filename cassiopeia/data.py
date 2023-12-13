@@ -15,6 +15,7 @@ class Region(Enum):
     turkey = "TR"
     russia = "RU"
     philippines = "PH"
+    indonesia = "ID"
     singapore = "SG"
     thailand = "TH"
     taiwan = "TW"
@@ -54,7 +55,7 @@ class Region(Enum):
             "TH": "GMT+7",
             "TW": "GMT+8",
             "VN": "GMT+7",
-
+            "ID": "GMT+8",
         }
         return tzs[self.value]
 
@@ -106,11 +107,18 @@ class Platform(Enum):
     oceania = "OC1"
     turkey = "TR1"
     russia = "RU"
-    philippines = "PH2"
-    singapore = "SG2"
-    thailand = "TH2"
-    taiwan = "TW2"
-    vietnam = "VN2"
+    philippines = "PH"
+    singapore = "SG"
+    thailand = "TH"
+    taiwan = "TW"
+    vietnam = "VN"
+    indonesia = "ID1"
+    philippines_sea = "PH2"
+    singapore_sea = "SG2"
+    thailand_sea = "TH2"
+    taiwan_sea = "TW2"
+    vietnam_sea = "VN2"
+    indonesia_sea = "ID2"
 
     @property
     def region(self) -> "Region":
