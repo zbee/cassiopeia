@@ -14,6 +14,11 @@ class Region(Enum):
     oceania = "OCE"
     turkey = "TR"
     russia = "RU"
+    philippines = "PH"
+    singapore = "SG"
+    thailand = "TH"
+    taiwan = "TW"
+    vietnam = "VN"
 
     @property
     def platform(self) -> "Platform":
@@ -44,6 +49,12 @@ class Region(Enum):
             "KR": "GMT+6",
             "JP": "GMT+7",
             "OCE": "GMT+8",
+            "PH": "GMT+8",
+            "SG": "GMT+8",
+            "TH": "GMT+7",
+            "TW": "GMT+8",
+            "VN": "GMT+7",
+
         }
         return tzs[self.value]
 
@@ -71,6 +82,16 @@ class Region(Enum):
             return Continent.europe
         if self is Region.russia:
             return Continent.europe
+        if self is Region.philippines:
+            return Continent.sea
+        if self is Region.singapore:
+            return Continent.sea
+        if self is Region.thailand:
+            return Continent.sea
+        if self is Region.taiwan:
+            return Continent.sea
+        if self is Region.vietnam:
+            return Continent.sea
 
 
 class Platform(Enum):
@@ -85,6 +106,11 @@ class Platform(Enum):
     oceania = "OC1"
     turkey = "TR1"
     russia = "RU"
+    philippines = "PH2"
+    singapore = "SG2"
+    thailand = "TH2"
+    taiwan = "TW2"
+    vietnam = "VN2"
 
     @property
     def region(self) -> "Region":
@@ -129,6 +155,16 @@ DEFAULT_LOCALE = {
     Platform.turkey: "tr_TR",
     Region.russia: "ru_RU",
     Platform.russia: "ru_RU",
+    Region.philippines: "en_PH",
+    Platform.philippines: "en_PH",
+    Region.singapore: "en_SG",
+    Platform.singapore: "en_SG",
+    Region.thailand: "en_TH",
+    Platform.thailand: "en_TH",
+    Region.taiwan: "zh_TW",
+    Platform.taiwan: "zh_TW",
+    Region.vietnam: "vn_VN",
+    Platform.vietnam: "vn_VN",
 }
 
 
@@ -201,6 +237,7 @@ class GameMode(Enum):
     nexus_blitz = "NEXUSBLITZ"
     odyssey = "ODYSSEY"
     utlbook = "ULTBOOK"
+    cherry = "CHERRY"
 
 
 class MasteryTree(Enum):
@@ -328,6 +365,9 @@ class Lane(Enum):
             "TOP": Lane.top_lane,
             "JUNGLE": Lane.jungle,
             "UTILITY": Lane.utility,
+            "INVALID": None,
+            "Invalid": None,
+            "": None,
             "NONE": None,
         }[string]
 
@@ -338,6 +378,8 @@ class Role(Enum):
     duo_support = "DUO_SUPPORT"
     none = "NONE"
     solo = "SOLO"
+    carry = "CARRY"
+    support = "SUPPORT"    
 
     def from_match_naming_scheme(string: str):
         return {
@@ -348,6 +390,8 @@ class Role(Enum):
             "SUPPORT": Role.duo_support,
             "NONE": Role.none,
             "SOLO": Role.solo,
+            "CARRY": Role.carry,
+            "SUPPORT": Role.support,        
         }[string]
 
 
