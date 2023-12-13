@@ -55,6 +55,7 @@ from ..core.league import (
 )
 from ..core.match import MatchData, TimelineData, Match, Timeline
 from ..core.summoner import SummonerData, Summoner
+from ..core.account import AccountData, Account
 from ..core.status import ShardStatusData, ShardStatus
 from ..core.spectator import (
     CurrentGameInfoData,
@@ -95,6 +96,7 @@ default_expirations = {
     Match: datetime.timedelta(days=3),
     Timeline: datetime.timedelta(days=1),
     Summoner: datetime.timedelta(days=1),
+    Account: datetime.timedelta(days=1),
     ShardStatus: datetime.timedelta(hours=1),
     CurrentMatch: datetime.timedelta(hours=0.5),
     FeaturedMatches: datetime.timedelta(hours=0.5),
@@ -1526,5 +1528,55 @@ class Cache(DataSource, DataSink):
             SummonerData
         ):
             return result._data[SummonerData]
+        else:
+            raise NotFoundError
+
+
+    ################
+    # Account API #
+    ################
+
+    @get.register(Account)
+    @validate_query(
+        uniquekeys.validate_account_dto_query, uniquekeys.convert_to_continent
+    )
+    def get_account(
+        self, query: Mapping[str, Any], context: PipelineContext = None
+    ) -> Account:
+        return self._get(Account, query, uniquekeys.for_account_query, context)
+
+    @get_many.register(Account)
+    @validate_query(
+        uniquekeys.validate_many_account_query, uniquekeys.convert_to_continent
+    )
+    def get_many_account(
+        self, query: Mapping[str, Any], context: PipelineContext = None
+    ) -> Generator[Account, None, None]:
+        return self._get_many(
+            Account, query, uniquekeys.for_many_account_query, context
+        )
+
+    @put.register(Account)
+    def put_account(self, item: Account, context: PipelineContext = None) -> None:
+        self._put(Account, item, uniquekeys.for_account, context=context)
+
+    @put_many.register(Account)
+    def put_many_account(
+        self, items: Iterable[Account], context: PipelineContext = None
+    ) -> None:
+        self._put_many(Account, items, uniquekeys.for_account, context=context)
+
+    @get.register(AccountData)
+    @validate_query(
+        uniquekeys.validate_account_query, uniquekeys.convert_to_continent
+    )
+    def get_account_data(
+        self, query: Mapping[str, Any], context: PipelineContext = None
+    ) -> AccountData:
+        result = self.get_account(query=query, context=context)
+        if result._data[AccountData] is not None and result._Ghost__is_loaded(
+            AccountData
+        ):
+            return result._data[AccountData]
         else:
             raise NotFoundError

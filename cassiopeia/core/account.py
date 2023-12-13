@@ -24,7 +24,8 @@ class AccountData(CoreData):
 
 @searchable(
     {
-        str: ["puuid", "gameName", "tagLine", ]
+        str: ["puuid", "gameName", "tagLine", ],
+        Region: ["region"],
     }
 )
 class Account(CassiopeiaGhost):
@@ -138,7 +139,7 @@ class Account(CassiopeiaGhost):
 
     @lazy_property
     def region(self) -> Region:
-        """The region for this summoner."""
+        """The region for this account."""
         return Region(self._data[AccountData].region)
 
     @CassiopeiaGhost.property(AccountData)
