@@ -26,8 +26,19 @@ class AccountTransformer(DataTransformer):
 
     # Data to Core
 
-    # @transform.register(AccountData, Account)
+    @transform.register(AccountData, Account)
     def account_data_to_core(
             self, value: AccountData, context: PipelineContext = None
     ) -> Account:
         return Account.from_data(value)
+
+    # Dto to Core
+
+    @transform.register(AccountDto, Account)
+    def account_data_to_core(
+            self, value: AccountDto, context: PipelineContext = None
+    ) -> Account:
+        data = AccountData(**value)
+        return Account.from_data(data)
+
+
